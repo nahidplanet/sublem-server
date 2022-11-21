@@ -1,24 +1,19 @@
-const express = require('express');
 const app = require('./app');
-const PORT = process.env.PORT || 5000;
+
+require('dotenv').config();
+const PORT = 5000;
+const mongoose = require('mongoose');
+const { errorHandler } = require('./middleware/errorHandler');
 
 
+// database 
+mongoose.connect(process.env.DATABASE_URL_LOCAL).then((x) => {
+    console.log("database connected..");
+}).catch(err=>console.log(err));
 
+// error handler 
+app.use(errorHandler);
 
-
-
-
-
-
-
-
-
-app.get("/", (req, res, next) => {
-	res.status(200).send("welcome to sublem.com")
-})
-app.get("*", (req, res, next) => {
-	res.status(200).send("This is Wrong Route")
-})
 app.listen(PORT, () => {
-	console.log("sublem serve is runnig on" + PORT);
+    console.log(`server is running ON....${PORT}`);
 })

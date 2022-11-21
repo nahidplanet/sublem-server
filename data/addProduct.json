@@ -1,0 +1,14 @@
+
+[
+	{
+		"name":"product 1",
+		"code":"CDD256d2sSk",
+		"sortDescription":"this is sort description",
+		"longDescription":"this is logng description",
+		"regularPrice":"6000",
+		"newPrice":"4000",
+		"selectCategory":"arabic furniture",
+		"productType":"sofa",
+		"productImage":"https://image22.jpg"
+	  }
+]
