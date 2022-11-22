@@ -2,6 +2,7 @@ const Product = require("../model/product.model")
 
 // create product 
 module.exports.getProductsService = async () => {
+	const result = await Product.find();
 	return result;
 
 }

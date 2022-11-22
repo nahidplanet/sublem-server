@@ -60,15 +60,15 @@ const productSchema = mongoose.Schema({
 		trim: true,
 		lowercase: true,
 		enum: {
-			values: ["sofa", "bed", "carpet"],
-			message: "Product Type {VALUE} "
+			values: ["sofa", "bed", "carpet","bed_mattress","curtain","wallpaper"],
+			message: "Product Type :{VALUE} is not valid"
 		}
 	},
 	productImage: [
 		{
 			productImagePath: {
-				type: String
-				// required: [true,"this is product image path...it's required."]
+				type: String,
+				required: [true,"this is product image path...it's required."]
 			}
 
 		}

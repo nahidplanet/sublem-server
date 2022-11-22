@@ -2,34 +2,40 @@ const { productCreateService, getProductsService } = require("../service/product
 
 
 // get product 
-module.exports.getProducts = async (req, res) => {
+module.exports.getProducts = async (req, res,next) => {
 	try {
 		const data = await getProductsService();
 		if (data) {
-			return res.status(200).json({status:true,data});
+			// return res.status(200).json({ status: true, data });
+			return res.send(data)
 		}
 	} catch (error) {
-		res.status(400).json({status:false,message:error.message});
+		res.status(400).json({ status: false, message: error.message });
 	}
 }
+
+
 // create products 
-module.exports.createProduct = async (req, res) => {
+module.exports.createProduct = async (req, res,next) => {
+
+	if (req.files === undefined || req.files === [] || req.files === '') {
+		return res.status(400).json({error:"please select file"});
+	}
 	const uploadedFiles = req.files;
-	
-
 	let filenames = []
-	await uploadedFiles.map(file=> filenames.push({productImagePath:file.filename}));
-
-	// console.log("uploaded Files",uploadedFiles);
-let bodyData = req.body;
-bodyData.productImage = filenames
+	await uploadedFiles.map(file => filenames.push({ productImagePath: file.filename }));
+	let bodyData = req.body;
+	bodyData.productImage = filenames
+	const data = await productCreateService(bodyData);
 
 	try {
-		const data = await productCreateService(bodyData);
-		if (data) {
-			return res.status(200).json({status:true,message:"product create successful"});
+
+		if (!data) {
+			return res.status(400).json({ status: false, message: "product uploaded failed" });
 		}
+		res.status(200).json({ status: true, message: "product create successful" });
 	} catch (error) {
-		res.status(400).json({status:false,message:error.message});
+		// return res.status(400).json({ status: false, message: error.message });
+		next(error)
 	}
 }
