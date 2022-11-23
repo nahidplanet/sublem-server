@@ -1,64 +1,103 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const bcryptjs = require('bcryptjs');
+const userSchema = mongoose.Schema({
+	fullName: {
+		type: String,
+		// required: [true, "your full name is required"],
+		minLength: [3, 'your full name must be at least 3 characters'],
+		lowercase: true,
+		trim:true
+	},
+	address: {
+		type: String,
+		// required: [true, "your address is required"],
+		lowercase: true,
+		trim:true
+	},
+	mobileNumber: {
+		type: Number,
+		// required: [true, "mobile number is required"],
+		validate:[validator.isMobilePhone,"please provide a valid contact number"],
 
-const userSchema= mongoose.Schema({
-	fullName:{
-		type:String,
-		min: [3, 'Must be at least 3, got {VALUE}'],
-		lowercase:true,
 	},
-	address:{
-		type:String,
-		min: [3, 'Must be at least 3, got {VALUE}'],
-		lowercase:true,
+	email: {
+		type: String,
+		// required: [true, "your email is required"],
+		validate: [validator.isEmail, "please provide a valid email"],
+		lowercase: true,
+		trim: true
 	},
-	mobile:{
-		type:Number,
-		min: [8, 'Must be at least 8, got {VALUE}'],
-		
+	role: {
+		type: String,
+		enum: ["admin", "user", "editor"],
+		default: "user"
 	},
-	email:{
-		type:String,
-		required:[true,"user email is required"],
-		validate:[validator.isEmail,"please provide a valid email"],
-		lowercase:true,
+	cart: {
+		type: Array,
+		default: []
 	},
-	role:{
-		type:String,
-		enum:["admin","user","editor"],
-		default:"user"
+	wishlist: {
+		type: Array,
+		default: []
 	},
-	cart:{
-		type:Array,
-		default:[]
+	username: {
+		type: String,
+		// required: [true, "user name is required"],
+		minLength: [3, 'your user name must be at least 3 characters'],
+		lowercase: true,
+		trim:true
 	},
-	wishlist:{
-		type:Array,
-		default:[]
+	password: {
+		type: String,
+		// required: [true, "password is required"],
+		validate: (value) => {
+			validator.isStrongPassword(value, {
+				minLength: 6,
+				minLowercase: 1,
+				minNumbers: 1,
+				minUppercase: 1,
+				minSymbols: 1
+			})
+		},
+		message: "password {VALUE} is not strong enough",
 	},
-	username:{
-		type:String,
-		required:[true,"user name is required"],
-		min: [3, 'Must be at least 3, got {VALUE}'],
-		lowercase:true,
+	confirmPassword: {
+		type: String,
+		// required: [true, "confirm password is required"],
+		validate: {
+			function(value) {
+				return value === this.password;
+			},
+			message:"password doesn't match!"
+		},
+
 	},
-	password:{
-		type:String,
-		min: [6, 'Must be at least 6, got {VALUE}'],
+	status: {
+		type: String,
+		enum:["active","inactive","block"],
+		default: "inactive"
 	},
-	confirmed:{
-		type:Boolean,
-		default:false
+	activeToken: {
+		type: String
 	},
-	activeToken:{
-		type:String
+	id: {
+		type: String
 	},
-	id:{
-		type:String
-	}
-},{
-	timestamps:true
+	passwordChangeAt:Date,
+	passwordResetToken:String,
+	passwordResetExpires:Date,
+}, {
+	timestamps: true
+})
+userSchema.pre("save",function(next){
+	const password = this.password;
+	const hashPassword = bcryptjs.hashSync(password);
+	this.password = hashPassword;
+	this.confirmPassword = undefined;
+	next()
+
 })
 
-const User = mongoose.model("User",userSchema);
+const User = mongoose.model("User", userSchema);
 module.exports = User;
