@@ -1,22 +1,18 @@
-const {
-	productCreateService,
-	getProductsService,
-	getProductByIdService
-} = require("../service/product.service")
+const { getArabicProductsService } = require("../service/arabic.service");
+
 
 
 // get product 
-module.exports.getProducts = async (req, res, next) => {
-	const category = req.query.category;
-	// console.log(category);
+module.exports.getArabicProducts = async (req, res, next) => {
 	try {
-		const data = await getProductsService(category);
-		if (data) {
-			// return res.status(200).json({ status: true, data });
-			return res.send(data)
+		const data = await getArabicProductsService();
+		if (!data) {
+			return res.status(400).json({ status: false, message:" Product Not Found" });
 		}
+		 res.status(200).json({ status: true, data});
+
 	} catch (error) {
-		res.status(400).json({ status: false, message: error.message });
+		next(error)
 	}
 }
 

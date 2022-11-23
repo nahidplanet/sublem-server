@@ -1,8 +1,14 @@
 const Product = require("../model/product.model")
 
 // create product 
-module.exports.getProductsService = async () => {
-	const result = await Product.find();
+module.exports.getProductsService = async (category) => {
+	const result = await Product.find({selectCategory:category});
+	return result;
+
+}
+// get single product by id
+module.exports.getProductByIdService = async (id) => {
+	const result = await Product.find({_id:id});
 	return result;
 
 }
