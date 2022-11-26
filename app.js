@@ -5,7 +5,9 @@ const productRoute = require('./routes/v1/product.route');
 const upload = require('./middleware/product.multer');
 const Product = require('./model/product.model');
 const arabicRoute = require('./routes/v1/arabic.route');
-const userRoute = require('./routes/v1/user.route');
+const userRoute = require('./routes/v1/userRegistration.route');
+const emailVerify = require('./routes/v1/emailVerify.route');
+const loginRoute = require('./routes/v1/userLogin.route');
 
 
 
@@ -15,7 +17,9 @@ app.use(express.static("public"));
 
 app.use("/api/v1/product",productRoute);
 app.use("/api/v1/arabic",arabicRoute);
-app.use("/api/v1/user",userRoute);
+app.use("/api/v1/user-create",userRoute);
+app.use("/api/v1/user-create/confirmation",emailVerify);
+app.use("/api/v1/login-user",loginRoute);
 
 
 app.get("/", (req, res, next) => {
