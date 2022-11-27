@@ -7,7 +7,6 @@ const mg = mailgun.client({
 	key: process.env.MAILGUN_API_KEY,
 	
 });
-console.log(MAILGUN_API_KEY);
 module.exports.mailGun = async (data) => {
 
 	const result = await mg.messages

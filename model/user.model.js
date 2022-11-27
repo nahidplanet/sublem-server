@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcryptjs = require('bcryptjs');
 const crypto = require('crypto');
+const { ObjectId } = mongoose.Schema.Types
 
 const userSchema = mongoose.Schema({
 	fullName: {
@@ -11,14 +12,20 @@ const userSchema = mongoose.Schema({
 		lowercase: true,
 		trim: true
 	},
-	address: {
+	addressOne: {
+		type: String,
+		// required: [true, "your address is required"],
+		lowercase: true,
+		trim: true
+	},
+	addressTwo: {
 		type: String,
 		// required: [true, "your address is required"],
 		lowercase: true,
 		trim: true
 	},
 	mobileNumber: {
-		type: Number,
+		type: String,
 		// required: [true, "mobile number is required"],
 		validate: [validator.isMobilePhone, "please provide a valid contact number"],
 
@@ -35,10 +42,10 @@ const userSchema = mongoose.Schema({
 		enum: ["admin", "user", "editor"],
 		default: "user"
 	},
-	cart: {
-		type: Array,
-		default: []
-	},
+	cart: [{
+        type: ObjectId,
+        ref: "Product"
+    }],
 	wishlist: {
 		type: Array,
 		default: []
@@ -79,7 +86,7 @@ const userSchema = mongoose.Schema({
 		enum: ["active", "inactive", "block"],
 		default: "inactive"
 	},
-	activeToken:String,
+	activeToken: String,
 	tokenExpire: Date,
 	passwordChangeAt: Date,
 	passwordResetToken: String,
@@ -90,17 +97,19 @@ const userSchema = mongoose.Schema({
 
 userSchema.pre("save", function (next) {
 	const password = this.password;
-	const hashPassword = bcryptjs.hashSync(password, 10);
+	var salt = bcryptjs.genSaltSync(10);
+	const hashPassword = bcryptjs.hashSync(password, salt);
 	this.password = hashPassword;
 	this.confirmPassword = undefined;
 	next()
 });
 
-userSchema.methods.comparePassword = function (password, hash) {
-	const checkPassword = bcryptjs.compareSync(password, hash)
+userSchema.methods.comparePassword = function (password, hash){
+	const checkPassword =  bcryptjs.compareSync(password, hash);
 	return checkPassword;
 
 };
+
 userSchema.methods.confirmationToken = function () {
 	// this crypto is node code module 
 	const createToken = crypto.randomBytes(32).toString('hex');

@@ -1,36 +1,41 @@
 const {
 	productCreateService,
 	getProductsService,
-	getProductByIdService
+	getProductByIdService,
+	updateProductByIdService,
+	deleteProductByIdService
 } = require("../service/product.service")
 
 
-// get product 
+
+
+// =========================
+// get product all
+// =========================
 module.exports.getProducts = async (req, res, next) => {
-	const category = req.query.category;
-	// console.log(category);
 	try {
-		const data = await getProductsService(category);
-		if (data) {
-			// return res.status(200).json({ status: true, data });
-			return res.send(data)
+		const data = await getProductsService();
+		if (!data || data.length < 1 ) {
+			return res.status(404).json({ status: false, message:"no data found" });
 		}
+		res.status(200).json({ status: true, message:"success",data:data });
 	} catch (error) {
-		res.status(400).json({ status: false, message: error.message });
+		next(error);
 	}
 }
 
 
 
-
+// =============================
 // get single product by id
+// =============================
 module.exports.getProductById = async (req, res, next) => {
 	const { id } = req.params;
 	
 	try {
 		const data = await getProductByIdService(id);
-		if (!data) {
-			 res.status(400).json({ status: false, message:"id not found" });
+		if (!data || data.length < 1) {
+			 res.status(404).json({ status: false, message:"Invalid id" });
 		}else{
 			res.status(200).json({ status: true, data:data});
 		}
@@ -40,9 +45,12 @@ module.exports.getProductById = async (req, res, next) => {
 }
 
 
-// create products 
-module.exports.createProduct = async (req, res, next) => {
 
+
+// ============================
+// create products 
+// =============================
+module.exports.createProduct = async (req, res, next) => {
 	if (req.files === undefined || req.files === [] || req.files === '') {
 		return res.status(400).json({ error: "please select file" });
 	}
@@ -52,15 +60,59 @@ module.exports.createProduct = async (req, res, next) => {
 	let bodyData = req.body;
 	bodyData.productImage = filenames
 	const data = await productCreateService(bodyData);
-
 	try {
-
-		if (!data) {
+		if (!data || data.length <1) {
 			return res.status(400).json({ status: false, message: "product uploaded failed" });
 		}
 		res.status(200).json({ status: true, message: "product create successful" });
 	} catch (error) {
 		// return res.status(400).json({ status: false, message: error.message });
+		next(error)
+	}
+}
+
+
+
+
+
+
+// ===========================
+// update product by id and body
+// ============================
+
+module.exports.updateProductById = async (req, res, next) => {
+const {id} = req.params;
+const data = req.body;
+	const result = await updateProductByIdService(id,data);
+
+	try {
+		if (!result || result.length < 1 || result.modifiedCount == 0) {
+			return res.status(404).json({ status: false, message: "Invalid id" });
+		}
+		res.status(200).json({ status: true, message: "success",result:result });
+	} catch (error) {
+		next(error)
+	}
+}
+
+
+
+
+
+// ===========================
+// delete product by id and body
+// ============================
+
+module.exports.deleteProductById = async (req, res, next) => {
+const {id} = req.params;
+	const result = await deleteProductByIdService(id);
+
+	try {
+		if (!result || result.length < 1 || result.deletedCount == 0 ) {
+			return res.status(404).json({ status: false, message: "Invalid id" });
+		}
+		res.status(200).json({ status: true, message: "success",result:result });
+	} catch (error) {
 		next(error)
 	}
 }

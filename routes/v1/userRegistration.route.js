@@ -1,13 +1,13 @@
 const express = require('express');
 const { createUser } = require('../../controller/userRegistration.controller');
 const { checkNewUser } = require('../../middleware/checkNewUser');
-const userRoute=express.Router();
+const singUpRoute = express.Router();
 
 
-userRoute.route("/")
-.get()
-.post(checkNewUser,createUser)
-userRoute.route("/:id")
-.get()
+singUpRoute.route("/")
+	.get()
+	.post(checkNewUser, createUser)
+singUpRoute.route("/:id")
+	.get()
 
-module.exports = userRoute;
+module.exports = singUpRoute;

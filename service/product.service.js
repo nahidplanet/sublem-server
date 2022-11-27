@@ -1,8 +1,8 @@
 const Product = require("../model/product.model")
 
-// create product 
-module.exports.getProductsService = async (category) => {
-	const result = await Product.find({selectCategory:category});
+// get all product 
+module.exports.getProductsService = async () => {
+	const result = await Product.find();
 	return result;
 
 }
@@ -13,10 +13,24 @@ module.exports.getProductByIdService = async (id) => {
 
 }
 
-// create product 
+// post single product by form-data
 module.exports.productCreateService = async (data) => {
-	
 	const result = await Product.create(data);
+	return result;
+
+}
+
+
+
+// update single product by id 
+module.exports.updateProductByIdService = async (id,data) => {
+	const result = await Product.updateOne({_id:id},{$set:data});
+	return result;
+
+}
+// update single product by id 
+module.exports.deleteProductByIdService = async (id) => {
+	const result = await Product.deleteOne({_id:id});
 	return result;
 
 }

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+
 const productSchema = mongoose.Schema({
 	name: {
 		type: String,
@@ -18,7 +19,7 @@ const productSchema = mongoose.Schema({
 		type: String,
 		trim: true,
 	},
-	regularPrice: {
+	price: {
 		type: Number,
 		trim: true,
 		validate: {
@@ -31,10 +32,18 @@ const productSchema = mongoose.Schema({
 					return toInteger;
 				}
 			},
-			message: "quantity must be a number"
+			message: "regular price must be a number"
 		}
 	},
-	newPrice: {
+	color:{
+		type:String
+	},
+	feature:{
+		type:Boolean,
+		enum:[true,false],
+		default:false,
+	},
+	discount: {
 		type: Number,
 		trim: true,
 		validate: {
@@ -47,20 +56,20 @@ const productSchema = mongoose.Schema({
 					return toInteger;
 				}
 			},
-			message: "quantity must be a number"
+			message: "new Price must be a number"
 		}
 	},
-	selectCategory: {
+	category: {
 		type: String,
 		trim: true,
 		lowercase: true,
 	},
-	productType: {
+	type: {
 		type: String,
 		trim: true,
 		lowercase: true,
 		enum: {
-			values: ["sofa", "bed", "carpet","bed_mattress","curtain","wallpaper"],
+			values: ["sofa", "bed", "carpet", "bed_mattress", "curtain", "wallpaper"],
 			message: "Product Type :{VALUE} is not valid"
 		}
 	},
@@ -68,7 +77,7 @@ const productSchema = mongoose.Schema({
 		{
 			productImagePath: {
 				type: String,
-				required: [true,"this is product image path...it's required."]
+				required: [true, "this is product image path...it's required."]
 			}
 
 		}
@@ -81,6 +90,36 @@ const productSchema = mongoose.Schema({
 		default: "active",
 		lowercase: true
 	},
+	quantity: {
+		type: Number,
+		validate: {
+			validator: (value) => {
+				const isInteger = Number.isInteger(value)
+				if (isInteger) {
+					return true;
+				} else {
+					const toInteger = parseInt(value)
+					return toInteger;
+				}
+			},
+			message: "quantity must be a number"
+		}
+	},
+	stock: {
+		type: Number,
+		validate: {
+			validator: (value) => {
+				const isInteger = Number.isInteger(value)
+				if (isInteger) {
+					return true;
+				} else {
+					const toInteger = parseInt(value)
+					return toInteger;
+				}
+			},
+			message: "stock must be a number"
+		}
+	}
 },
 	{
 		timestamps: true,

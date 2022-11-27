@@ -1,25 +1,32 @@
 const express = require('express');
+const { checkRole } = require('../../middleware/checkRole');
+const upload = require('../../middleware/product.multer');
+const { verifyToken } = require('../../middleware/verifyToken');
 const {
 	createProduct,
 	getProducts,
-	getProductById
+	getProductById,
+	updateProductById,
+	deleteProductById
 } = require('../../controller/product.controller');
-const upload = require('../../middleware/product.multer');
-
 
 const productRoute = express.Router()
 
 
 productRoute.route("/")
+	// .get(verifyToken,checkRole("user","admin","editor"), getProducts)
+	// get all product 
 	.get(getProducts)
-	.post(upload.array("productImage"), createProduct)
-	.patch()
-	.delete()
+	// create a product 
+	.post(verifyToken, upload.array("productImage"), createProduct)
+	
 productRoute.route("/:id")
+// get a single product 
 	.get(getProductById)
-	.post()
-	.patch()
-	.delete()
+	// update a single product 
+	.patch(updateProductById)
+	// delete single product by id 
+	.delete(deleteProductById)
 
 
 module.exports = productRoute;

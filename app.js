@@ -1,13 +1,15 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
+
 const productRoute = require('./routes/v1/product.route');
-const upload = require('./middleware/product.multer');
-const Product = require('./model/product.model');
 const arabicRoute = require('./routes/v1/arabic.route');
-const userRoute = require('./routes/v1/userRegistration.route');
 const emailVerify = require('./routes/v1/emailVerify.route');
 const loginRoute = require('./routes/v1/userLogin.route');
+const adminRoute = require('./routes/v1/adminLogin.route');
+const cartRoute = require('./routes/v1/cart.route');
+const singUpRoute = require('./routes/v1/userRegistration.route');
+const userRoute = require('./routes/v1/user.route');
 
 
 
@@ -15,11 +17,42 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
-app.use("/api/v1/product",productRoute);
-app.use("/api/v1/arabic",arabicRoute);
-app.use("/api/v1/user-create",userRoute);
-app.use("/api/v1/user-create/confirmation",emailVerify);
+
+//* =======================================
+// admin Login
+// =======================================
+app.use("/api/v1/developer/login",adminRoute);
+
+
+//* =======================================
+// user routes
+// =======================================
 app.use("/api/v1/login-user",loginRoute);
+app.use("/api/v1/user-create",singUpRoute);
+app.use("/api/v1/user",userRoute);
+app.use("/api/v1/user-create/confirmation",emailVerify);
+
+// =======================================
+// product routes
+// =======================================
+
+app.use("/api/v1/product/",productRoute);
+// 
+// for arabic product category 
+app.use("/api/v1/product/arabic",arabicRoute);
+app.use("/api/v1/product/home",arabicRoute);
+app.use("/api/v1/product/office",arabicRoute);
+app.use("/api/v1/product/service",arabicRoute);
+
+// product add to cart
+app.use("/api/v1/product/cart",cartRoute);
+// product add wishlist
+app.use("/api/v1/product/wishlist",arabicRoute);
+
+
+
+
+
 
 
 app.get("/", (req, res, next) => {

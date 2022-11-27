@@ -1,11 +1,12 @@
 const User = require("../model/user.model");
 const { createUserService } = require("../service/userRegistration.service");
+const { token } = require("../utils/createToken");
 // const { sendMail, mailGun } = require("../utils/sendMail");
 
 
 
 // create a user 
-module.exports.createUser = async (req, res, next) => {
+module.exports.createUser =async (req, res, next) => {
 	
 	try {
 
@@ -27,7 +28,12 @@ module.exports.createUser = async (req, res, next) => {
 		const bcryptToken =  user.confirmationToken();
 
 		await user.save({validateBeforeSave:false})
+		// create json web token 
+		const jwtToken = token(user)
 		// ======================================================================================
+		const {password:userPassword,...others} = user.toObject()
+
+		
 		// send active link for user 
 		const send = require("gmail-send")({
 			user: "sknahid.cc@gmail.com",
@@ -35,7 +41,7 @@ module.exports.createUser = async (req, res, next) => {
 			to: req?.body?.email,
 			subject: "Activate your account",
 			html:`
-			<p>Thank you to creating your account. please Click <a href="${req.protocol}://${req.get("host")}${req.originalUrl}confirmation/${bcryptToken}
+			<p>Thank you to creating your account. please Click <a href="${req.protocol}://${req.get("host")}${req.originalUrl}/confirmation/${bcryptToken}
 			">here</a> to confirm your account</p>`,
 		});
 
@@ -51,8 +57,9 @@ module.exports.createUser = async (req, res, next) => {
 					});
 				} else {
 					return res.status(200).json({
-						massage: "your account create successful please check your email",
+						massage: "check your email to confirm account",
 						status: true,
+						accessToken:jwtToken
 					});
 				}
 			}
