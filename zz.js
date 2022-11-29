@@ -18,9 +18,74 @@
 		update single product by {id} and {body} = http://localhost:5000/api/v1/product/63835c6f8f7f324740861c20
 
 
+cart controller
+===================
+// add to cart 
+
+const User = require("../model/user.model");
+const { addToCartService } = require("../service/cart.service");
+module.exports.addToCart = async (req, res, next) => {
+	try {
+		const userId = req?.user?.id;
+		const productInfo = req.body;
+		const { productId, price, quantity } = productInfo;
+
+
+		const cart = await addToCartService(userId, productInfo);
+		if (!cart) {
+			return res.status(404).json({ status: false, message: "cart add failed" });
+		} else {
+
+			const filter = cart.cart.find(single => single.productId == productId)
+
+			if (!filter) {
+
+				const added = await User.updateOne({ _id: userId },
+					{
+						$set: {
+							cart: {
+								...productInfo,
+								quantity: filter.quantity + quantity
+							}
+						}
+					}
+				)
+				console.log("added", added);
+			} else {
+				// update quantity in this box
+				const update = await User.updateOne({ _id: userId }, {
+					cart: {
+						'$set': filter
+					}
+
+				})
+				console.log("updated ===> ", update);
+			}
+
+			// return res.status(200).json({ status: true, message: "cart add sucess" });
+
+		}
+
+	} catch (error) {
+		next(error)
+	}
+}
 
 
 
+cart service ============================
+
+const User = require("../model/user.model")
+
+// add to cart 
+module.exports.addToCartService = async (userId, productInfo) => {
+	// const { productId, price, quantity } = productInfo;
+
+	const cart = await User.findOne({ _id: userId });
+	return cart
+
+
+}
 
 
 

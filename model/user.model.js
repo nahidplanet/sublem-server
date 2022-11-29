@@ -42,10 +42,40 @@ const userSchema = mongoose.Schema({
 		enum: ["admin", "user", "editor"],
 		default: "user"
 	},
-	cart: [{
-        type: ObjectId,
-        ref: "Product"
-    }],
+	// cart: [
+	// 	{
+	// 		productId: {
+	// 			type: ObjectId,
+	// 			ref: "Product"
+	// 		},
+	// 		price: {
+	// 			type: Number,
+	// 			required: [true, "cart product price required"]
+	// 		},
+	// 		quantity: {
+	// 			type: Number,
+	// 			default: 1,
+	// 			required: [true, "cart product quantity required"]
+	// 		}
+	// 	}
+	// ],
+	cart: [
+		// {
+		// 	productId: {
+		// 		type: ObjectId,
+		// 		ref: "Product"
+		// 	},
+		// 	price: {
+		// 		type: Number,
+		// 		required: [true, "cart product price required"]
+		// 	},
+		// 	quantity: {
+		// 		type: Number,
+		// 		default: 1,
+		// 		required: [true, "cart product quantity required"]
+		// 	}
+		// }
+	],
 	wishlist: {
 		type: Array,
 		default: []
@@ -104,8 +134,8 @@ userSchema.pre("save", function (next) {
 	next()
 });
 
-userSchema.methods.comparePassword = function (password, hash){
-	const checkPassword =  bcryptjs.compareSync(password, hash);
+userSchema.methods.comparePassword = async function (password, hash) {
+	const checkPassword = await bcryptjs.compareSync(password, hash);
 	return checkPassword;
 
 };

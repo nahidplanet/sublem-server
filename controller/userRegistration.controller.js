@@ -41,7 +41,7 @@ module.exports.createUser =async (req, res, next) => {
 			to: req?.body?.email,
 			subject: "Activate your account",
 			html:`
-			<p>Thank you to creating your account. please Click <a href="${req.protocol}://${req.get("host")}${req.originalUrl}/confirmation/${bcryptToken}
+			<p>Thank you to creating your account. please Click <a href="${req.protocol}://${req.get("host")}${req.originalUrl}confirmation/${bcryptToken}
 			">here</a> to confirm your account</p>`,
 		});
 
