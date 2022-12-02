@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcryptjs = require('bcryptjs');
 const crypto = require('crypto');
+const { getProductById } = require('../controller/product.controller');
 const { ObjectId } = mongoose.Schema.Types
 
 const userSchema = mongoose.Schema({
@@ -59,23 +60,14 @@ const userSchema = mongoose.Schema({
 	// 		}
 	// 	}
 	// ],
-	cart: [
-		// {
-		// 	productId: {
-		// 		type: ObjectId,
-		// 		ref: "Product"
-		// 	},
-		// 	price: {
-		// 		type: Number,
-		// 		required: [true, "cart product price required"]
-		// 	},
-		// 	quantity: {
-		// 		type: Number,
-		// 		default: 1,
-		// 		required: [true, "cart product quantity required"]
-		// 	}
+	cart: {
+		type: Array,
+		default: [],
+		// productId:{
+		// 	typeof:ObjectId,
+		// 	ref:"Product"
 		// }
-	],
+	},
 	wishlist: {
 		type: Array,
 		default: []

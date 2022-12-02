@@ -18,3 +18,17 @@ module.exports.deleteToCartService = async (userId, productId) => {
 	);
 	return result;
 }
+
+
+
+// delete all cart 
+module.exports.deleteFullCartService = async (userId) => {
+
+	const result = await User.updateOne(
+		{ _id: userId },
+		{ $set: { cart: [] } }
+	)
+	return result;
+
+
+}

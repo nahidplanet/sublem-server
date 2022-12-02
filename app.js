@@ -10,6 +10,9 @@ const adminRoute = require('./routes/v1/adminLogin.route');
 const cartRoute = require('./routes/v1/cart.route');
 const singUpRoute = require('./routes/v1/userRegistration.route');
 const userRoute = require('./routes/v1/user.route');
+const orderRoute = require('./routes/v1/order.route');
+const AdminCheckRoute = require('./routes/v1/checkAdmin.route');
+const RequireAuthRoute = require('./routes/v1/checkUser.route');
 
 
 
@@ -22,6 +25,8 @@ app.use(express.static("public"));
 // admin Login
 // =======================================
 app.use("/api/v1/developer/login",adminRoute);
+app.use("/api/v1/check-admin",AdminCheckRoute);
+app.use("/api/v1/check-user",RequireAuthRoute);
 
 
 //* =======================================
@@ -48,6 +53,8 @@ app.use("/api/v1/product/service",arabicRoute);
 app.use("/api/v1/product/cart",cartRoute);
 // product add wishlist
 app.use("/api/v1/product/wishlist",arabicRoute);
+// product order
+app.use("/api/v1/order/",orderRoute);
 
 
 

@@ -2,7 +2,7 @@
 
 
 const User = require("../model/user.model");
-const { deleteToCartService } = require("../service/cart.service")
+const { deleteToCartService, deleteFullCartService } = require("../service/cart.service")
 
 
 
@@ -30,7 +30,7 @@ module.exports.addToCart = async (req, res, next) => {
 			if (!duplicate) {
 				await User.findOneAndUpdate(
 					{ _id: req?.user?.id },
-					{ $push: { cart: { productId: req.body.productId, quantity: 1 } } }
+					{ $push: { cart: { productId: req.body.productId,price:productInfo.price} } }
 				).then(response => {
 					res.status(200).json({ status: true, message: "product added" });
 				}).catch(error => {
@@ -63,7 +63,7 @@ module.exports.addToCart = async (req, res, next) => {
 			).then(response => {
 				res.status(200).json({ status: true, message: "product decrement" });
 			}).catch(error => {
-				res.status(404).json({ status: false, message: error.message })
+				return res.status(404).json({ status: false, message: error.message })
 
 			})
 		}
@@ -88,9 +88,25 @@ module.exports.deleteToCart = async (req, res, next) => {
 	if (result?.acknowledged || result?.modifiedCount > 0) {
 		res.status(200).json({ status: true, message: "product deleted success" })
 	} else {
-		res.status(400).json({ status: false, message: "product deleted failed" })
+		return res.status(400).json({ status: false, message: "product deleted failed" })
 	}
 
+}
+
+// product delete full  cart 
+module.exports.deleteFullCart = async (req, res, next) => {
+	try {
+		const userId = req?.user?.id;
+		const result = await deleteFullCartService(userId)
+		if (!result) {
+			return res.status(400).json({ status: false, message: "cart empty failed" })
+		} else {
+			res.status(200).json({ status: true, message: "cart is empty " })
+
+		}
+	} catch (error) {
+		next(error)
+	}
 }
 
 

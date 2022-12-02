@@ -14,11 +14,11 @@ const productRoute = express.Router()
 
 
 productRoute.route("/")
-	// .get(verifyToken,checkRole("user","admin","editor"), getProducts)
+	.get(verifyToken,checkRole("user","admin","editor"), getProducts)
 	// get all product 
 	.get(getProducts)
 	// create a product 
-	.post(verifyToken, upload.array("productImage"), createProduct)
+	.post(verifyToken,checkRole("admin","editor"), upload.array("productImage"), createProduct)
 	
 productRoute.route("/:id")
 // get a single product 

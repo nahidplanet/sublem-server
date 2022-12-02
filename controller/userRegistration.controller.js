@@ -27,7 +27,7 @@ module.exports.createUser =async (req, res, next) => {
 		// bcryptToken from user mode Methods 
 		const bcryptToken =  user.confirmationToken();
 
-		await user.save({validateBeforeSave:false})
+		await user.save({validateBeforeSave:false});
 		// create json web token 
 		const jwtToken = token(user)
 		// ======================================================================================
