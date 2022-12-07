@@ -3,7 +3,6 @@ const { token } = require("../utils/createToken");
 const bcrypt = require('bcryptjs');
 
 module.exports.adminLogin = async (req, res, next) => {
-	console.log(req.body);
 	try {
 		const {email,password} = req.body;
 		if (!email && !password) {
@@ -24,6 +23,6 @@ module.exports.adminLogin = async (req, res, next) => {
 		 res.status(200).json({ status: true, accessToken});
 
 	} catch (error) {
-		console.log(error)
+		next(error)
 	}
 }

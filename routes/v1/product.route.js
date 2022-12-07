@@ -14,7 +14,7 @@ const productRoute = express.Router()
 
 
 productRoute.route("/")
-	.get(verifyToken,checkRole("user","admin","editor"), getProducts)
+	// .get(verifyToken,checkRole("user","admin","editor"), getProducts)
 	// get all product 
 	.get(getProducts)
 	// create a product 
@@ -24,9 +24,9 @@ productRoute.route("/:id")
 // get a single product 
 	.get(getProductById)
 	// update a single product 
-	.patch(updateProductById)
+	.put(verifyToken,checkRole("admin","editor"), upload.array("productImage"),updateProductById)
 	// delete single product by id 
-	.delete(deleteProductById)
+	.delete(verifyToken,checkRole("admin","editor"),deleteProductById)
 
 
 module.exports = productRoute;
