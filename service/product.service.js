@@ -3,9 +3,12 @@ const Product = require("../model/product.model")
 // get all product 
 module.exports.getProductsService = async (filters, queries) => {
 	const products = await Product.find(filters)
-		.select(queries.field)
-		.sort(queries.sortBy)
-	return products;
+	.skip(queries.skip)
+	.limit(queries.limit)
+
+	const totalProduct = await Product.countDocuments(filters);
+	const totalPage = Math.ceil(totalProduct / queries.limit)
+	return { totalPage, totalProduct, products };
 }
 
 
@@ -27,7 +30,7 @@ module.exports.productCreateService = async (data) => {
 
 // update single product by id 
 module.exports.updateProductByIdService = async (id, data) => {
-	const result = await Product.findOneAndUpdate({ _id: id }, data,{new:true,upsert:true});
+	const result = await Product.findOneAndUpdate({ _id: id }, data, { new: true, upsert: true });
 	return result;
 }
 // update single product by id 

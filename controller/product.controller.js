@@ -14,19 +14,19 @@ const {
 // get product all
 // =========================
 module.exports.getProducts = async (req, res, next) => {
+	
 	try {
-
 		// step 0: copy the query ;
 		let filters = { ...req.query };
 		const queries = {};
-		const excludeFields = ['sort', 'page', 'limit', "field"]
+		const excludeFields = ['sort', 'page', 'limit', "field", "price" ]
 		excludeFields.forEach(field => delete filters[field]);
 
 		let filterString = JSON.stringify(filters);
 		filterString = filterString.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
 		filters = JSON.parse(filterString);
 		// step 1: create a empty string;
-	
+
 
 		// step 2: sort multiple value ;
 		//{{URL}}/product?sort=stock,-name
@@ -47,18 +47,31 @@ module.exports.getProducts = async (req, res, next) => {
 			queries.category = categoryBy;
 		}
 
-		if (req.query.price) {
+		if (req.query.page || req.query.limit) {
+
+			//{{URL}}/product?sort=price,-name&field=name,price,-_id&category=home&page=2&limit=10
+			const { page = 1, limit = 10 } = req.query;
+			const skip = (page - 1) * parseInt(limit)
+
+
+
+			queries.skip = skip;
+			queries.limit = parseInt(limit);
+
+			// queries.price = priceBy;
+		}
+		// if (req.query.price) {
 
 			// const priceBy = req.query.price.split(',').join(' ');
 			// queries.price = priceBy;
-		}
+		// }
 
 
 
 
 
 
-		const data = await getProductsService(filters,queries);
+		const data = await getProductsService(filters, queries);
 
 
 		if (!data || data.length < 1) {
