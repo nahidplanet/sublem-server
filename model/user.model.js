@@ -43,31 +43,34 @@ const userSchema = mongoose.Schema({
 		enum: ["admin", "user", "editor"],
 		default: "user"
 	},
-	// cart: [
-	// 	{
-	// 		productId: {
-	// 			type: ObjectId,
-	// 			ref: "Product"
-	// 		},
-	// 		price: {
-	// 			type: Number,
-	// 			required: [true, "cart product price required"]
-	// 		},
-	// 		quantity: {
-	// 			type: Number,
-	// 			default: 1,
-	// 			required: [true, "cart product quantity required"]
+	cartItems: [
+		{
+			productId: {
+				type: ObjectId,
+				ref: "Product",
+				required:[true,"productId is required"]
+			},
+			price: {
+				type: Number,
+				required: [true, "cart product price required"]
+			},
+			quantity: {
+				type: Number,
+				default: 1,
+				required: [true, "cart product quantity required"]
+			}
+		}
+	],
+	// cart: {
+	// 	cartItems: [
+	// 		{
+	// 			product: {
+	// 				type:ObjectId,
+	// 				ref:"Product"
+	// 			}
 	// 		}
-	// 	}
-	// ],
-	cart: {
-		type: Array,
-		default: [],
-		// productId:{
-		// 	typeof:ObjectId,
-		// 	ref:"Product"
-		// }
-	},
+	// 	]
+	// },
 	wishlist: {
 		type: Array,
 		default: []
