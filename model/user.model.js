@@ -56,8 +56,7 @@ const userSchema = mongoose.Schema({
 			},
 			quantity: {
 				type: Number,
-				default: 1,
-				required: [true, "cart product quantity required"]
+				default: 1
 			}
 		}
 	],

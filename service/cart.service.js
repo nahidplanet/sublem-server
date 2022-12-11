@@ -9,6 +9,11 @@ module.exports.addToCartService = async (userId, productInfo) => {
 
 
 }
+// user get all carts
+module.exports.userGetCartService = async (userId) => {
+	const cart = await User.findOne({_id:userId}).populate("cartItems.productId");
+	return cart
+}
 // delete to cart 
 module.exports.deleteToCartService = async (userId, productId) => {
 

@@ -1,12 +1,15 @@
 const express = require('express');
-const { addToCart, deleteToCart, deleteFullCart } = require('../../controller/cart.controller');
+const { addToCart, deleteToCart, deleteFullCart, userGetCart } = require('../../controller/cart.controller');
 const { checkEmailVerify } = require('../../middleware/checkEmailVerify');
 const { verifyToken } = require('../../middleware/verifyToken');
 
 const cartRoute = express.Router()
 
 
-cartRoute.route("/:type")
+cartRoute.route("/user/")
+// user get all carts 
+	.get(verifyToken, checkEmailVerify, userGetCart)
+	// user add a new cart
 	.post(verifyToken, checkEmailVerify, addToCart)
 
 cartRoute.route("/delete/:productId")
@@ -20,5 +23,5 @@ cartRoute.route("/deleteFull")
 
 
 
-module.exports = cartRoute; 
+module.exports = cartRoute;
 
